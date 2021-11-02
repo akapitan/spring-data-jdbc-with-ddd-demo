@@ -8,6 +8,28 @@ public class Person extends AggregateRoot {
   private String name;
   private String lastname;
 
+  public Person(PersonBuilder personBuilder) {
+    this.setId(personBuilder.id);
+    this.setName(personBuilder.name);
+    this.setLastname(personBuilder.lastname);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getLastname() {
+    return lastname;
+  }
+
+  public void setLastname(String lastname) {
+    this.lastname = lastname;
+  }
+
   public static PersonBuilder builder() {
     return new PersonBuilder();
   }
@@ -37,11 +59,7 @@ public class Person extends AggregateRoot {
     }
 
     public Person build() {
-      Person person = new Person();
-      person.setId( this.id);
-      person.name = this.name;
-      person.lastname = this.lastname;
-      return person;
+      return  new Person(this);
     }
   }
 }
