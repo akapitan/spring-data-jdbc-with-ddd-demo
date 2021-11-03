@@ -14,7 +14,7 @@ public class JdbcConfiguration extends AbstractJdbcConfiguration {
   BeforeSaveCallback<AggregateRoot> beforeSaveCallback() {
     return (entity, mutableAggregateChange) -> {
       if (entity.getId() == null) {
-        entity.setId( UUID.randomUUID());
+        entity.setId(UUID.randomUUID());
       }
       return entity;
     };

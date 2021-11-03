@@ -1,6 +1,3 @@
--- The tables created here are reused for multiple examples.
--- Therefore they contain columns that are not used for other examples.
-
 create table person
 (
     id      uuid primary key,

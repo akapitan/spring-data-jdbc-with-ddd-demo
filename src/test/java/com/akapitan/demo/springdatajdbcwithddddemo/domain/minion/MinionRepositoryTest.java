@@ -77,10 +77,37 @@ class MinionRepositoryTest {
     repository.save(ivo);
     assertThat(ivo).isNotNull().extracting(Minion::getToys).extracting(Set::size).isEqualTo(2);
 
-    //de
+    //delete toy
     ivo.getToys().removeIf(x -> x.getName().equals("Pistol"));
     Minion minionReloaded = repository.save(ivo);
     System.out.println(minionReloaded);
+  }
+
+  @Test
+  void createMinionDeleteToys() {
+    Person gru = Person.builder()
+        .name("Felonius")
+        .lastname("Gru")
+        .build();
+
+    personRepository.save(gru);
+
+    Minion ivo = Minion.builder()
+        .name("Ivo")
+        .evilMaster(gru.getId())
+        .addToy(Toy.builder().name("Pistol").material("metal"))
+        .addToy(Toy.builder().name("Spear").material("wood"))
+        .build();
+
+    repository.save(ivo);
+    assertThat(ivo).isNotNull().extracting(Minion::getToys).extracting(Set::size).isEqualTo(2);
+
+    ivo.getToys().add(Toy.builder()
+        .name("Stick")
+        .material("WoodenStick")
+        .build());
+
+    repository.save(ivo);
   }
 
 }

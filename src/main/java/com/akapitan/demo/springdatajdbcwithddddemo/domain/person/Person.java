@@ -35,6 +35,7 @@ public class Person extends AggregateRoot {
   }
 
   public static final class PersonBuilder {
+
     public UUID id;
     private String name;
 
@@ -59,7 +60,7 @@ public class Person extends AggregateRoot {
     }
 
     public Person build() {
-      return  new Person(this);
+      return new Person(this);
     }
   }
 }

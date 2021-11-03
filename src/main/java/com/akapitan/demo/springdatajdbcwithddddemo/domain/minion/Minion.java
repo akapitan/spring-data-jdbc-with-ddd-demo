@@ -93,7 +93,7 @@ public class Minion extends AggregateRoot {
       return this;
     }
 
-    public MinionBuilder addToy(ToyBuilder toyBuilder){
+    public MinionBuilder addToy(ToyBuilder toyBuilder) {
       this.toys.add(toyBuilder.build());
       return this;
     }
