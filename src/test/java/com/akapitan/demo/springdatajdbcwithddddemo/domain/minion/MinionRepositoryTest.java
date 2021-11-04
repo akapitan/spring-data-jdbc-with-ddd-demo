@@ -7,16 +7,22 @@ import com.akapitan.demo.springdatajdbcwithddddemo.PostgreSqlContainerConfigurat
 import com.akapitan.demo.springdatajdbcwithddddemo.config.JdbcConfiguration;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.person.Person;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.person.PersonRepository;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlConfig;
 
 @DataJdbcTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Sql(config = @SqlConfig(separator = ScriptUtils.EOF_STATEMENT_SEPARATOR))
 @Import({PostgreSqlContainerConfiguration.class, JdbcConfiguration.class})
 class MinionRepositoryTest {
 
@@ -41,12 +47,7 @@ class MinionRepositoryTest {
   @Test
   void minionAggregateReferenceToPerson() {
 
-    Person gru = Person.builder()
-        .name("Felonius")
-        .lastname("Gru")
-        .build();
-
-    personRepository.save(gru);
+    Person gru = personRepository.findByName("Felonius");
 
     Minion ivo = Minion.builder()
         .name("Ivo")
@@ -60,12 +61,7 @@ class MinionRepositoryTest {
 
   @Test
   void createMinionWithToys() {
-    Person gru = Person.builder()
-        .name("Felonius")
-        .lastname("Gru")
-        .build();
-
-    personRepository.save(gru);
+    Person gru = personRepository.findByName("Felonius");
 
     Minion ivo = Minion.builder()
         .name("Ivo")
@@ -85,12 +81,7 @@ class MinionRepositoryTest {
 
   @Test
   void createMinionDeleteToys() {
-    Person gru = Person.builder()
-        .name("Felonius")
-        .lastname("Gru")
-        .build();
-
-    personRepository.save(gru);
+    Person gru = personRepository.findByName("Felonius");
 
     Minion ivo = Minion.builder()
         .name("Ivo")
@@ -108,6 +99,18 @@ class MinionRepositoryTest {
         .build());
 
     repository.save(ivo);
+    System.out.println(ivo);
+  }
+
+  @Test
+  void givenEvilMasterRef_shouldReturnMinionsContainingMaster() {
+    Person gru = personRepository.findByName("Felonius");
+
+    List<Minion> minions = repository.findAllByEvilMaster(gru.getId());
+
+    assertThat(minions).hasSize(3).extracting(Minion::getEvilMaster).extracting(
+        AggregateReference::getId).contains(UUID.fromString("00000001-0000-0000-0000-d00000000000"));
+
   }
 
 }

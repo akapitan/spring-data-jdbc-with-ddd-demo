@@ -2,16 +2,28 @@ package com.akapitan.demo.springdatajdbcwithddddemo.domain.person;
 
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.shared.AggregateRoot;
 import java.util.UUID;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 public class Person extends AggregateRoot {
 
   private String name;
   private String lastname;
 
+  @PersistenceConstructor
+  public Person(UUID id, String name, String lastname) {
+    setId(id);
+    this.name = name;
+    this.lastname = lastname;
+  }
+
   public Person(PersonBuilder personBuilder) {
     this.setId(personBuilder.id);
     this.setName(personBuilder.name);
     this.setLastname(personBuilder.lastname);
+  }
+
+  public static PersonBuilder builder() {
+    return new PersonBuilder();
   }
 
   public String getName() {
@@ -28,10 +40,6 @@ public class Person extends AggregateRoot {
 
   public void setLastname(String lastname) {
     this.lastname = lastname;
-  }
-
-  public static PersonBuilder builder() {
-    return new PersonBuilder();
   }
 
   public static final class PersonBuilder {

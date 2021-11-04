@@ -1,5 +1,6 @@
 package com.akapitan.demo.springdatajdbcwithddddemo.domain.minion;
 
+import com.akapitan.demo.springdatajdbcwithddddemo.domain.minion.Color.ColorBuilder;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.minion.Toy.ToyBuilder;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.person.Person;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.shared.AggregateRoot;
@@ -14,19 +15,24 @@ import org.springframework.data.jdbc.core.mapping.AggregateReference;
 public class Minion extends AggregateRoot {
 
   private String name;
-
   private AggregateReference<Person, UUID> evilMaster;
-
   private final Set<Toy> toys = new HashSet<>();
+  private final Set<Color> colors = new HashSet<>();
 
   public Minion(MinionBuilder minionBuilder) {
     this.setId(minionBuilder.id);
     this.setName(minionBuilder.name);
     this.setEvilMaster(minionBuilder.evilMaster);
     minionBuilder.toys.forEach(this::addToy);
+    minionBuilder.colors.forEach(this::addColor);
   }
 
   @PersistenceConstructor
+  public Minion(Collection<Toy> toys, Collection<Color> colors) {
+    toys.forEach(this::addToy);
+    colors.forEach(this::addColor);
+  }
+
   public Minion(String name, AggregateReference<Person, UUID> evilMaster, Collection<Toy> toys) {
     this.name = name;
     this.evilMaster = evilMaster;
@@ -36,7 +42,16 @@ public class Minion extends AggregateRoot {
     }
   }
 
-  private void addToy(Toy toy) {
+  public static MinionBuilder builder() {
+    return new MinionBuilder();
+  }
+
+  public void addColor(Color color) {
+    color.setMinion(this);
+    colors.add(color);
+  }
+
+  public void addToy(Toy toy) {
     toy.setMinion(this);
     this.toys.add(toy);
   }
@@ -62,18 +77,13 @@ public class Minion extends AggregateRoot {
     return toys;
   }
 
-  public static MinionBuilder builder() {
-    return new MinionBuilder();
-  }
-
   static final class MinionBuilder {
 
-    private UUID id;
-
-    private String name;
-
-    private AggregateReference<Person, UUID> evilMaster;
     private final Set<Toy> toys = new HashSet<>();
+    public final Set<Color> colors = new HashSet<>();
+    private UUID id;
+    private String name;
+    private AggregateReference<Person, UUID> evilMaster;
 
     private MinionBuilder() {
     }
@@ -95,6 +105,10 @@ public class Minion extends AggregateRoot {
 
     public MinionBuilder addToy(ToyBuilder toyBuilder) {
       this.toys.add(toyBuilder.build());
+      return this;
+    }
+    public MinionBuilder addToy(ColorBuilder toyBuilder) {
+      this.colors.add(toyBuilder.build());
       return this;
     }
 

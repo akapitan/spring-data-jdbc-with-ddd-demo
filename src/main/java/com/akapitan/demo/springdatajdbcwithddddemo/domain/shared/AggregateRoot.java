@@ -1,9 +1,11 @@
 package com.akapitan.demo.springdatajdbcwithddddemo.domain.shared;
 
+import java.util.Objects;
 import java.util.UUID;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.Persistable;
 
-public class AggregateRoot {
+public abstract class AggregateRoot implements Persistable<UUID> {
 
   @Id
   private UUID id;
@@ -14,5 +16,10 @@ public class AggregateRoot {
 
   public void setId(UUID id) {
     this.id = id;
+  }
+
+  @Override
+  public boolean isNew() {
+    return Objects.isNull(id);
   }
 }

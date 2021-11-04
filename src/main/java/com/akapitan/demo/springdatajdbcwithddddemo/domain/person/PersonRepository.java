@@ -8,4 +8,6 @@ public interface PersonRepository extends Repository<Person, UUID> {
   void save(Person minion);
 
   Person findById(UUID id);
+
+  Person findByName(String name);
 }

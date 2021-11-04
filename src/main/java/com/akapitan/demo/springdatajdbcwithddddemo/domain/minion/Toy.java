@@ -1,5 +1,6 @@
 package com.akapitan.demo.springdatajdbcwithddddemo.domain.minion;
 
+import java.util.UUID;
 import org.springframework.data.annotation.Transient;
 
 class Toy {
@@ -10,6 +11,22 @@ class Toy {
 
   @Transient
   private Minion minion;
+
+  //  @PersistenceConstructor
+  public Toy(String name, String material) {
+    this.name = name;
+    this.material = material;
+  }
+
+  public Toy(String name, String material, UUID id) {
+    this.name = name;
+    this.material = material;
+    id.equals(id);
+  }
+
+  public Toy() {
+
+  }
 
   public static ToyBuilder builder() {
     return new ToyBuilder();
