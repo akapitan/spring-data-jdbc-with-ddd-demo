@@ -6,7 +6,6 @@ import com.akapitan.demo.springdatajdbcwithddddemo.domain.person.Person;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.shared.AggregateRoot;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -15,6 +14,7 @@ import org.springframework.data.jdbc.core.mapping.AggregateReference;
 public class Minion extends AggregateRoot {
 
   private String name;
+  private Description description = new Description();
   private AggregateReference<Person, UUID> evilMaster;
   private final Set<Toy> toys = new HashSet<>();
   private final Set<Color> colors = new HashSet<>();
@@ -33,15 +33,6 @@ public class Minion extends AggregateRoot {
     colors.forEach(this::addColor);
   }
 
-  public Minion(String name, AggregateReference<Person, UUID> evilMaster, Collection<Toy> toys) {
-    this.name = name;
-    this.evilMaster = evilMaster;
-
-    if (Objects.nonNull(toys)) {
-      toys.forEach(this::addToy);
-    }
-  }
-
   public static MinionBuilder builder() {
     return new MinionBuilder();
   }
@@ -54,6 +45,14 @@ public class Minion extends AggregateRoot {
   public void addToy(Toy toy) {
     toy.setMinion(this);
     this.toys.add(toy);
+  }
+
+  public void addAppearance(String key, String value){
+    this.description.appearance.put(key, value);
+  }
+
+  public void addPersonality(String key, String value){
+    this.description.personality.put(key, value);
   }
 
   public String getName() {
@@ -75,6 +74,10 @@ public class Minion extends AggregateRoot {
 
   public Set<Toy> getToys() {
     return toys;
+  }
+
+  public void setDescription(Description description) {
+    this.description = description;
   }
 
   static final class MinionBuilder {
@@ -105,10 +108,6 @@ public class Minion extends AggregateRoot {
 
     public MinionBuilder addToy(ToyBuilder toyBuilder) {
       this.toys.add(toyBuilder.build());
-      return this;
-    }
-    public MinionBuilder addToy(ColorBuilder toyBuilder) {
-      this.colors.add(toyBuilder.build());
       return this;
     }
 

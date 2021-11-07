@@ -1,12 +1,13 @@
 package com.akapitan.demo.springdatajdbcwithddddemo.domain.minion;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Transient;
 
 class Color {
 
   private String name;
 
-  @Transient
+  @Transient @JsonIgnore
   private Minion minion;
 
   public String getName() {

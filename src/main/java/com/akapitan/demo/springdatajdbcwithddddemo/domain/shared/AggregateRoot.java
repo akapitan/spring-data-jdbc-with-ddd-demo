@@ -3,12 +3,16 @@ package com.akapitan.demo.springdatajdbcwithddddemo.domain.shared;
 import java.util.Objects;
 import java.util.UUID;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.Persistable;
 
 public abstract class AggregateRoot implements Persistable<UUID> {
 
   @Id
   private UUID id;
+
+  @Version
+  private Long version;
 
   public UUID getId() {
     return id;

@@ -18,13 +18,10 @@ create table minion
     version        int,
     name           varchar(255),
     number_of_eyes varchar(255),
---     color          uuid,
     evil_master    uuid,
-    description    varchar(4000),
---     constraint FK_minion_color foreign key (color) references color,
+    description    jsonb,
     constraint FK_minion_person foreign key (evil_master) references person
 );
-
 
 create table toy
 (

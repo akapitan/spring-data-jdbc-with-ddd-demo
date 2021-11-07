@@ -15,7 +15,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     testImplementation platform("org.testcontainers:testcontainers-bom:1.16.0")
@@ -23,6 +23,7 @@ dependencies {
     testImplementation 'org.testcontainers:testcontainers'
     implementation 'org.liquibase:liquibase-core:4.4.3'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.0.4'
+    implementation 'org.json:json:20210307'
 }
 
 test {
