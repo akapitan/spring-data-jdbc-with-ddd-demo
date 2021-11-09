@@ -38,8 +38,11 @@ class MinionRepositoryTest {
 
   @Test
   void saveMinion() {
+    Person gru = personRepository.findByName("Felonius");
+
     Minion ivo = Minion.builder()
         .name("Ivo")
+        .evilMaster(gru.getId())
         .build();
     repository.save(ivo);
     assertThat(ivo).isNotNull();
@@ -65,9 +68,18 @@ class MinionRepositoryTest {
     ivo.addPersonality("enjoys", "bedtime stories");
     ivo.addPersonality("favorite-stuffed-animal", "Tim");
 
-    repository.save(ivo);
+    ivo.addToy(Toy.builder().name("Hammer").build());
+    ivo.addToy(Toy.builder().name("ScrewDriver").build());
+
+    ivo.addColor(Color.builder().name("blue").build());
+
+    Minion ivoReloaded = repository.save(ivo);
     assertThat(ivo).isNotNull().extracting(Minion::getEvilMaster).isNotNull().extracting(
         AggregateReference::getId).isEqualTo(gru.getId());
+
+    Minion byId = repository.findById(ivoReloaded.getId());
+    System.out.println(byId);
+
 
   }
 
@@ -105,7 +117,8 @@ class MinionRepositoryTest {
     repository.save(ivo);
     assertThat(ivo).isNotNull().extracting(Minion::getToys).extracting(Set::size).isEqualTo(2);
 
-    ivo.getToys().add(Toy.builder()
+    ivo.getToys().add(
+        Toy.builder()
         .name("Stick")
         .material("WoodenStick")
         .build());
