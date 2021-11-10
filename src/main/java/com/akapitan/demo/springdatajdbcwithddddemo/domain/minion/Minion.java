@@ -1,6 +1,5 @@
 package com.akapitan.demo.springdatajdbcwithddddemo.domain.minion;
 
-import com.akapitan.demo.springdatajdbcwithddddemo.domain.minion.Color.ColorBuilder;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.minion.Toy.ToyBuilder;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.person.Person;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.shared.AggregateRoot;
@@ -8,6 +7,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 
@@ -47,11 +47,11 @@ public class Minion extends AggregateRoot {
     this.toys.add(toy);
   }
 
-  public void addAppearance(String key, String value){
+  public void addAppearance(String key, String value) {
     this.description.appearance.put(key, value);
   }
 
-  public void addPersonality(String key, String value){
+  public void addPersonality(String key, String value) {
     this.description.personality.put(key, value);
   }
 
@@ -114,5 +114,38 @@ public class Minion extends AggregateRoot {
     public Minion build() {
       return new Minion(this);
     }
+  }
+
+  public enum Link {
+    TOYS("(select coalesce(json_agg(t.*), '[]'::json) from toy t where t.minion = m.id) as toys"),
+    COLORS(
+        "(select coalesce(json_agg(c.*), '[]'::json) from color c where c.minion = m.id) as colors"),
+    DESCRIPTION("description");
+
+    public String select;
+
+    Link(String select) {
+      this.select = select;
+    }
+
+    public String getSelect() {
+      return select;
+    }
+
+    public static String setSelect(Set<Link> links, String select) {
+      return fun.apply(links, select);
+    }
+
+    private static final BiFunction<Set<Link>, String, String> fun = (link, select) -> {
+
+      String result = select;
+
+      for (Link link1 : link) {
+        result = result.concat(", ").concat(link1.getSelect());
+      }
+      return result;
+    };
+
+
   }
 }

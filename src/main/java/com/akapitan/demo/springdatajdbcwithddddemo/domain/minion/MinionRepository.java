@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.Repository;
 
-public interface MinionRepository extends Repository<Minion, UUID> {
+public interface MinionRepository extends Repository<Minion, UUID>, MinionRepositoryCustom{
 
   Minion save(Minion minion);
 
