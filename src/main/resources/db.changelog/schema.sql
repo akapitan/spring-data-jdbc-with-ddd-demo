@@ -6,10 +6,15 @@ create table person
     lastname varchar(255)
 );
 
-create table color
+create table address
 (
-    minion   uuid not null,
-    name    varchar(255)
+    person        uuid not null ,
+    street        varchar,
+    city          varchar,
+    postal_number varchar,
+    street_number varchar,
+    constraint address_person foreign key (person) references person
+
 );
 
 create table minion
@@ -21,6 +26,12 @@ create table minion
     evil_master    uuid,
     description    jsonb,
     constraint FK_minion_person foreign key (evil_master) references person
+);
+
+create table color
+(
+    minion uuid not null,
+    name   varchar(255)
 );
 
 create table toy

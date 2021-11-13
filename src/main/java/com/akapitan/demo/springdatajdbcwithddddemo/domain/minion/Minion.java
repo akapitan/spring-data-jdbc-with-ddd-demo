@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 
 public class Minion extends AggregateRoot {
 

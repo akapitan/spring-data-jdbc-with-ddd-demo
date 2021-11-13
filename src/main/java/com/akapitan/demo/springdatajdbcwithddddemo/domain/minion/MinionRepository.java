@@ -9,14 +9,14 @@ public interface MinionRepository extends Repository<Minion, UUID>, MinionReposi
 
   Minion save(Minion minion);
 
-  @Query(value =
+/*  @Query(value =
       """
           select m.*,
             (select coalesce(json_agg(t.*), '[]'::json) from toy t where t.minion = m.id)   as toys,
             (select coalesce(json_agg(c.*), '[]'::json) from color c where c.minion = m.id) as colors
           from minion m
             where m.id = :id;
-          """)
+          """)*/
   Minion findById(UUID id);
 
   @Query(value =

@@ -29,8 +29,7 @@ class MinionRepositoryTest {
 
   public static final UUID EVIL_MASTER_UUID = UUID.fromString(
       "00000001-0000-0000-0000-a00000000000");
-  public static final UUID MINOIN_1 = UUID.fromString(
-      "00000001-0000-0000-0000-b00000000000");
+  public static final UUID MINOIN_1 = UUID.fromString("00000001-0000-0000-0000-b00000000000");
   public static final String EVIL_MASTER_NAME = "Felonius";
 
   @Autowired
@@ -122,9 +121,9 @@ class MinionRepositoryTest {
 
     ivo.getToys().add(
         Toy.builder()
-        .name("Stick")
-        .material("WoodenStick")
-        .build());
+            .name("Stick")
+            .material("WoodenStick")
+            .build());
 
     repository.save(ivo);
     System.out.println(ivo);
@@ -142,7 +141,7 @@ class MinionRepositoryTest {
   }
 
   @Test
-  void test2(){
+  void test2() {
     Minion byIdV2 = repository.findByIdV2(MINOIN_1, Set.of(Link.TOYS, Link.COLORS));
 
     System.out.println(byIdV2);
