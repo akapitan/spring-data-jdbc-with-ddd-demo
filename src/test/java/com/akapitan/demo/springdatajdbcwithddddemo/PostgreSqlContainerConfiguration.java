@@ -14,23 +14,23 @@ import org.testcontainers.jdbc.JdbcDatabaseDelegate;
 @TestConfiguration
 public class PostgreSqlContainerConfiguration {
 
-    @Bean
-    public PostgreSQLContainer<?> postgreSqlContainer() {
-        PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>("postgres:12.3");
-        postgreSqlContainer.start();
-        try (JdbcDatabaseDelegate delegate = new JdbcDatabaseDelegate(postgreSqlContainer, "")) {
-            delegate.execute("create extension if not exists \"uuid-ossp\"", "", 0, false, false);
-        }
-        return postgreSqlContainer;
+  @Bean
+  public PostgreSQLContainer<?> postgreSqlContainer() {
+    PostgreSQLContainer<?> postgreSqlContainer = new PostgreSQLContainer<>("postgres:12.3");
+    postgreSqlContainer.start();
+    try (JdbcDatabaseDelegate delegate = new JdbcDatabaseDelegate(postgreSqlContainer, "")) {
+      delegate.execute("create extension if not exists \"uuid-ossp\"", "", 0, false, false);
     }
+    return postgreSqlContainer;
+  }
 
-    @Bean
-    public HikariDataSource dataSource(PostgreSQLContainer<?> postgreSqlContainer) {
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl(postgreSqlContainer.getJdbcUrl());
-        dataSource.setUsername(postgreSqlContainer.getUsername());
-        dataSource.setPassword(postgreSqlContainer.getPassword());
-        return dataSource;
-    }
+  @Bean
+  public HikariDataSource dataSource(PostgreSQLContainer<?> postgreSqlContainer) {
+    HikariDataSource dataSource = new HikariDataSource();
+    dataSource.setJdbcUrl(postgreSqlContainer.getJdbcUrl());
+    dataSource.setUsername(postgreSqlContainer.getUsername());
+    dataSource.setPassword(postgreSqlContainer.getPassword());
+    return dataSource;
+  }
 
 }

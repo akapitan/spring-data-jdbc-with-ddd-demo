@@ -17,6 +17,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class MinionRowMapper implements RowMapper<Minion> {
 
+  private static boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
+    ResultSetMetaData rsmd = rs.getMetaData();
+    int columns = rsmd.getColumnCount();
+    for (int x = 1; x <= columns; x++) {
+      if (columnName.equals(rsmd.getColumnName(x))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Override
   public Minion mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -57,16 +68,5 @@ public class MinionRowMapper implements RowMapper<Minion> {
     }
 
     return minion;
-  }
-
-  private static boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
-    ResultSetMetaData rsmd = rs.getMetaData();
-    int columns = rsmd.getColumnCount();
-    for (int x = 1; x <= columns; x++) {
-      if (columnName.equals(rsmd.getColumnName(x))) {
-        return true;
-      }
-    }
-    return false;
   }
 }

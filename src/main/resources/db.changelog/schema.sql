@@ -8,7 +8,7 @@ create table person
 
 create table address
 (
-    person        uuid not null ,
+    person        uuid not null,
     street        varchar,
     city          varchar,
     postal_number varchar,

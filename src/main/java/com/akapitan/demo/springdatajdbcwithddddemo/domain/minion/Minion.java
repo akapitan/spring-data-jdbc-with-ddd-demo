@@ -10,15 +10,14 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 
 public class Minion extends AggregateRoot {
 
+  private final Set<Toy> toys = new HashSet<>();
+  private final Set<Color> colors = new HashSet<>();
   private String name;
   private Description description = new Description();
   private AggregateReference<Person, UUID> evilMaster;
-  private final Set<Toy> toys = new HashSet<>();
-  private final Set<Color> colors = new HashSet<>();
 
   public Minion(MinionBuilder minionBuilder) {
     this.setId(minionBuilder.id);
@@ -81,10 +80,42 @@ public class Minion extends AggregateRoot {
     this.description = description;
   }
 
+  public enum Link {
+    TOYS("(select coalesce(json_agg(t.*), '[]'::json) from toy t where t.minion = m.id) as toys"),
+    COLORS(
+        "(select coalesce(json_agg(c.*), '[]'::json) from color c where c.minion = m.id) as colors"),
+    DESCRIPTION("description");
+
+    private static final BiFunction<Set<Link>, String, String> fun = (link, select) -> {
+
+      String result = select;
+
+      for (Link link1 : link) {
+        result = result.concat(", ").concat(link1.getSelect());
+      }
+      return result;
+    };
+    public String select;
+
+    Link(String select) {
+      this.select = select;
+    }
+
+    public static String setSelect(Set<Link> links, String select) {
+      return fun.apply(links, select);
+    }
+
+    public String getSelect() {
+      return select;
+    }
+
+
+  }
+
   static final class MinionBuilder {
 
-    private final Set<Toy> toys = new HashSet<>();
     public final Set<Color> colors = new HashSet<>();
+    private final Set<Toy> toys = new HashSet<>();
     private UUID id;
     private String name;
     private AggregateReference<Person, UUID> evilMaster;
@@ -115,38 +146,5 @@ public class Minion extends AggregateRoot {
     public Minion build() {
       return new Minion(this);
     }
-  }
-
-  public enum Link {
-    TOYS("(select coalesce(json_agg(t.*), '[]'::json) from toy t where t.minion = m.id) as toys"),
-    COLORS(
-        "(select coalesce(json_agg(c.*), '[]'::json) from color c where c.minion = m.id) as colors"),
-    DESCRIPTION("description");
-
-    public String select;
-
-    Link(String select) {
-      this.select = select;
-    }
-
-    public String getSelect() {
-      return select;
-    }
-
-    public static String setSelect(Set<Link> links, String select) {
-      return fun.apply(links, select);
-    }
-
-    private static final BiFunction<Set<Link>, String, String> fun = (link, select) -> {
-
-      String result = select;
-
-      for (Link link1 : link) {
-        result = result.concat(", ").concat(link1.getSelect());
-      }
-      return result;
-    };
-
-
   }
 }

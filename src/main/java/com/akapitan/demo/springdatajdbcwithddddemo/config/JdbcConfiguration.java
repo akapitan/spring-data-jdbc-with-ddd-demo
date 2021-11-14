@@ -7,22 +7,28 @@ import com.akapitan.demo.springdatajdbcwithddddemo.domain.minion.Description.Str
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.minion.Minion;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.minion.MinionRowMapper;
 import com.akapitan.demo.springdatajdbcwithddddemo.domain.shared.AggregateRoot;
-import java.sql.JDBCType;
 import java.util.UUID;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.ReadingConverter;
-import org.springframework.data.convert.WritingConverter;
+import org.springframework.data.jdbc.core.convert.DataAccessStrategy;
+import org.springframework.data.jdbc.core.convert.JdbcConverter;
 import org.springframework.data.jdbc.core.convert.JdbcCustomConversions;
-import org.springframework.data.jdbc.core.convert.JdbcValue;
+import org.springframework.data.jdbc.core.mapping.JdbcMappingContext;
 import org.springframework.data.jdbc.repository.QueryMappingConfiguration;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.jdbc.repository.config.DefaultQueryMappingConfiguration;
+import org.springframework.data.relational.core.dialect.Dialect;
 import org.springframework.data.relational.core.mapping.event.BeforeSaveCallback;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
 @Configuration
 public class JdbcConfiguration extends AbstractJdbcConfiguration {
+
+  @Override
+  public DataAccessStrategy dataAccessStrategyBean(NamedParameterJdbcOperations operations,
+      JdbcConverter jdbcConverter, JdbcMappingContext context, Dialect dialect) {
+    return super.dataAccessStrategyBean(operations, jdbcConverter, context, dialect);
+  }
 
   @Bean
   BeforeSaveCallback<AggregateRoot> beforeSaveCallback() {
@@ -40,13 +46,12 @@ public class JdbcConfiguration extends AbstractJdbcConfiguration {
         .registerRowMapper(Minion.class, new MinionRowMapper())
         ;
   }
-  @Configuration
-  static class ConversionConfigurationApplication extends AbstractJdbcConfiguration {
 
-    @Override
-    @Bean
-    public JdbcCustomConversions jdbcCustomConversions() {
-      return new JdbcCustomConversions(asList(DescriptionToString.INSTANCE, StringToDescription.INSTANCE));
-    }
+  @Override
+  @Bean
+  public JdbcCustomConversions jdbcCustomConversions() {
+    return new JdbcCustomConversions(
+        asList(DescriptionToString.INSTANCE, StringToDescription.INSTANCE));
   }
+
 }

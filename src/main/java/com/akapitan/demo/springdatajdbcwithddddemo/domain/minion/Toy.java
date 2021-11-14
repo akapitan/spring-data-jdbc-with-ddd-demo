@@ -9,7 +9,8 @@ class Toy {
 
   private String material;
 
-  @Transient @JsonIgnore
+  @Transient
+  @JsonIgnore
   private Minion minion;
 
   public Toy(String name, String material) {

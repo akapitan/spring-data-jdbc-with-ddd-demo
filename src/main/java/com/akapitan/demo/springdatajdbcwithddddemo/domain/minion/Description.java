@@ -11,9 +11,8 @@ import org.springframework.data.convert.WritingConverter;
 
 public class Description {
 
-  private static final String JSON_APPEARANCE = "apperance";
   public static final String JSON_PERSONALITY = "personality";
-
+  private static final String JSON_APPEARANCE = "apperance";
   Map<String, String> appearance = new HashMap<>();
   Map<String, String> personality = new HashMap<>();
 

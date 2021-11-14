@@ -6,10 +6,9 @@ import org.springframework.data.annotation.PersistenceConstructor;
 
 public class Person extends AggregateRoot {
 
+  private final Address address;
   private String name;
   private String lastname;
-
-  private final Address address;
 
   @PersistenceConstructor
   public Person(UUID id, String name, String lastname,

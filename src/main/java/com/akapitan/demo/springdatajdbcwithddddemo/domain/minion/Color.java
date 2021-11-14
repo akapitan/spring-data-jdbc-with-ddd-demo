@@ -7,8 +7,13 @@ class Color {
 
   private String name;
 
-  @Transient @JsonIgnore
+  @Transient
+  @JsonIgnore
   private Minion minion;
+
+  public static ColorBuilder builder() {
+    return new ColorBuilder();
+  }
 
   public String getName() {
     return name;
@@ -22,16 +27,13 @@ class Color {
     return minion;
   }
 
-  public static ColorBuilder builder() {
-    return new ColorBuilder();
-  }
-
   public void setMinion(Minion minion) {
     this.minion = minion;
   }
 
 
   public static final class ColorBuilder {
+
     private String name;
 
     private Minion minion;
